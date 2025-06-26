@@ -21,6 +21,28 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    proxy: {
+      '/api/trailers': {
+        target: 'https://get-trailers-and-trips-181509438418.us-central1.run.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/trailers/, ''),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('X-API-Key', '0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220');
+          });
+        }
+      },
+      '/api/trip-data': {
+        target: 'https://get-trip-data-181509438418.us-central1.run.app',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/trip-data/, ''),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('X-API-Key', '0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220');
+          });
+        }
+      }
+    }
   },
   build: {
     outDir: 'dist',

@@ -35,7 +35,7 @@ function App() {
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-heading font-bold text-gradient">
-              Age Logistics
+              Agy Logistics
             </h2>
             <p className="text-dark-400">Loading your dashboard...</p>
           </div>

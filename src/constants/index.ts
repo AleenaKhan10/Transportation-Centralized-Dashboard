@@ -15,10 +15,10 @@ export const AUTH_CONFIG = {
 
 // Application
 export const APP_CONFIG = {
-  NAME: 'Age Logistics Dashboard',
+  NAME: 'Agy Logistics Dashboard',
   VERSION: '1.0.0',
   DESCRIPTION: 'Professional Transportation Business Dashboard',
-  COMPANY: 'Age Logistics',
+  COMPANY: 'Agy Logistics',
 }
 
 // Routes

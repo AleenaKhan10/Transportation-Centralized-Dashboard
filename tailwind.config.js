@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Age Logistics inspired color palette
+        // Agy Logistics inspired color palette
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',

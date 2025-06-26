@@ -32,7 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </div>
               <div>
                 <h1 className="text-xl font-heading font-bold text-gradient">
-                  Age Logistics
+                  Agy Logistics
                 </h1>
                 <p className="text-xs text-dark-400">Transportation Hub</p>
               </div>
@@ -120,7 +120,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   </div>
                   <div>
                     <h1 className="text-xl font-heading font-bold text-gradient">
-                      Age Logistics
+                      Agy Logistics
                     </h1>
                     <p className="text-xs text-dark-400">Transportation Hub</p>
                   </div>

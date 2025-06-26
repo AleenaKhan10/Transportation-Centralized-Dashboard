@@ -1,11 +1,11 @@
-# Age Logistics Dashboard
+# Agy Logistics Dashboard
 
-A modern, scalable React + TypeScript dashboard for transportation business management, inspired by Age Logistics with professional design and comprehensive user role authentication.
+A modern, scalable React + TypeScript dashboard for transportation business management, inspired by Agy Logistics with professional design and comprehensive user role authentication.
 
 ## ✨ Features
 
 - 🔐 **Secure Authentication** - JWT-based auth with role-based permissions
-- 🎨 **Beautiful UI** - Age Logistics inspired design with smooth animations
+- 🎨 **Beautiful UI** - Agy Logistics inspired design with smooth animations
 - 📱 **Responsive Design** - Works perfectly on all devices
 - 🚀 **High Performance** - Optimized with Vite and modern React patterns
 - 🔧 **Scalable Architecture** - Component-based structure for easy maintenance
@@ -102,7 +102,7 @@ src/
 ## 🎨 Design System
 
 ### Color Palette
-- **Primary**: Blue (`#0ea5e9`) - Age Logistics brand color
+- **Primary**: Blue (`#0ea5e9`) - Agy Logistics brand color
 - **Secondary**: Teal (`#2dd4bf`) - Accent color
 - **Dark**: Slate grays for dark theme
 - **Accent**: Green, Red, Yellow for status indicators
@@ -264,7 +264,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Age Logistics** - Design inspiration
+- **Agy Logistics** - Design inspiration
 - **React Team** - Amazing framework
 - **Tailwind CSS** - Utility-first CSS
 - **Framer Motion** - Smooth animations

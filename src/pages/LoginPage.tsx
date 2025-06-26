@@ -156,7 +156,7 @@ const LoginPage: React.FC = () => {
             transition={{ delay: 0.3 }}
             className="text-3xl font-bold text-white mb-2"
           >
-            Age Logistics
+            Agy Logistics
           </motion.h1>
           
           <motion.p 
@@ -182,7 +182,7 @@ const LoginPage: React.FC = () => {
               {isLogin ? 'Welcome Back' : 'Create Account'}
             </h2>
             <p className="text-dark-300 text-sm">
-              {isLogin ? 'Sign in to access your dashboard' : 'Join Age Logistics team'}
+              {isLogin ? 'Sign in to access your dashboard' : 'Join Agy Logistics team'}
             </p>
           </div>
 
@@ -434,7 +434,7 @@ const LoginPage: React.FC = () => {
           className="text-center mt-8"
         >
           <p className="text-dark-400 text-sm">
-            © 2024 Age Logistics. All rights reserved.
+            © 2024 Agy Logistics. All rights reserved.
           </p>
         </motion.div>
       </motion.div>

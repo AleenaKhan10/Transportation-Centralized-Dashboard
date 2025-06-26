@@ -231,4 +231,41 @@ export interface Notification {
     label: string;
     href: string;
   };
+}
+
+export interface Trailer {
+  trailer_id: string;
+  trip_ids: string[];
+}
+
+export interface TripAggregatedData {
+  reefer_mode_id: number;
+  reefer_mode: string;
+  required_temp: number;
+  driver_set_temp: number;
+  samsara_temp: number;
+  samsara_temp_time: number;
+}
+
+export interface TripData {
+  trailer_id: string;
+  trip_id: string;
+  driver_id: string;
+  truck_id: string;
+  status_id: number;
+  status: string;
+  priority: string;
+  aggregated_data: TripAggregatedData[];
+  trip_start_time: number;
+  trip_end_time: number;
+  sub_trip_start_time: number;
+  sub_trip_end_time: number;
+}
+
+export interface TrailerTripsResponse {
+  trailers: Trailer[];
+}
+
+export interface TripDataResponse {
+  trips: TripData[];
 } 

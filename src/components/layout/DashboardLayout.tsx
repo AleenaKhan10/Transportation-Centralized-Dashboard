@@ -7,7 +7,8 @@ import {
   Truck, 
   Users, 
   BarChart3, 
-  Settings
+  Settings,
+  MapPin
 } from 'lucide-react'
 import { NavigationItem } from '../../types/index'
 import Sidebar from './Sidebar'
@@ -28,6 +29,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       href: '/dashboard',
       icon: Home,
       current: location.pathname === '/dashboard',
+    },
+    {
+      name: 'Trailers & Trips',
+      href: '/dashboard/trailers',
+      icon: MapPin,
+      current: location.pathname.startsWith('/dashboard/trailers'),
     },
     {
       name: 'Shipments',

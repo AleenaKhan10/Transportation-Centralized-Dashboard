@@ -3,12 +3,16 @@ import { Routes, Route } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import DashboardOverview from '../components/dashboard/DashboardOverview'
+import TrailersPage from './TrailersPage'
 
 const DashboardPage: React.FC = () => {
   return (
     <DashboardLayout>
       <Routes>
         <Route index element={<DashboardOverview />} />
+        
+        {/* Trailers and trips route */}
+        <Route path="trailers" element={<TrailersPage />} />
         
         {/* Placeholder routes for future features */}
         <Route 

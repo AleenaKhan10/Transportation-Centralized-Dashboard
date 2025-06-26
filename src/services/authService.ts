@@ -117,7 +117,7 @@ export const mockAuthService = {
       const mockUser: User = {
         id: '1',
         email: 'admin@agelogistics.com',
-        fullName: 'Age Logistics Admin',
+        fullName: 'Agy Logistics Admin',
         phone: '+1234567890',
         avatar: undefined,
         role: {
