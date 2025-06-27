@@ -1,4 +1,5 @@
-const API_KEY = '0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220';
+// API key for external service (used in proxy configuration)
+// const API_KEY = '0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220';
 const TRAILERS_API_URL = '/api/trailers';
 const TRIP_DATA_API_URL = '/api/trip-data';
 

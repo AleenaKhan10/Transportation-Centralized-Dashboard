@@ -21,7 +21,7 @@ const LoginPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   
-  const { login, signup, isLoading, error, clearError } = useAuth()
+  const { login, signup, isLoading, clearError } = useAuth()
   
   const loginForm = useForm<LoginCredentials>({
     defaultValues: {

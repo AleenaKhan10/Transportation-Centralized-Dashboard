@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           // Import dynamically to avoid circular dependency
-          const { mockAuthService } = await import('@services/authService')
+          const { mockAuthService } = await import('../services/authService')
           const response = await mockAuthService.login(credentials)
           const { user, token, refreshToken } = response.data
 
@@ -111,7 +111,7 @@ export const useAuthStore = create<AuthStore>()(
         get().clearTokens()
 
         // Call logout API (fire and forget)
-        import('@services/authService').then(({ mockAuthService }) => {
+        import('../services/authService').then(({ mockAuthService }) => {
           mockAuthService.logout().catch(() => {
             // Ignore errors on logout
           })
@@ -136,7 +136,7 @@ export const useAuthStore = create<AuthStore>()(
         }
 
         try {
-          const { mockAuthService } = await import('@services/authService')
+          const { mockAuthService } = await import('../services/authService')
           const response = await mockAuthService.refreshToken(refreshToken)
           const { token: newToken, refreshToken: newRefreshToken } = response.data
 

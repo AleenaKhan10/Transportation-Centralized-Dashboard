@@ -145,6 +145,8 @@ export interface NavigationItem {
   icon: React.ComponentType<{ className?: string }>;
   permission?: string;
   children?: NavigationItem[];
+  current?: boolean;
+  badge?: string | number;
 }
 
 // Form Types

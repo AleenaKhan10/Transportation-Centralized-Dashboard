@@ -19,6 +19,8 @@ const TrailersPage: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(0);
   const [tripPage, setTripPage] = useState(0);
+  const [searchTripId, setSearchTripId] = useState('');
+  const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
     fetchTrailers();
@@ -66,16 +68,103 @@ const TrailersPage: React.FC = () => {
     }
   }, [selectedTrailer, fetchTripData]);
 
+  // Reverse lookup function to find trailer by trip ID
+  const searchByTripId = useCallback(async (tripId: string) => {
+    if (!tripId || !tripId.trim()) {
+      setError('Please enter a trip ID to search');
+      return;
+    }
+
+    try {
+      setSearchLoading(true);
+      setError('');
+      
+      // Ensure trailers data is available
+      if (!trailers || trailers.length === 0) {
+        setError('No trailers data available. Please refresh the page.');
+        return;
+      }
+      
+      // Find which trailer contains this trip ID
+      const foundTrailer = trailers.find(trailer => 
+        trailer && trailer.trip_ids && Array.isArray(trailer.trip_ids) &&
+        trailer.trip_ids.some(id => 
+          id && id.toLowerCase().includes(tripId.toLowerCase())
+        )
+      );
+
+      if (!foundTrailer) {
+        setError(`No trailer found containing trip ID: ${tripId}`);
+        return;
+      }
+
+      // Find the exact trip ID match
+      const exactTripId = foundTrailer.trip_ids.find(id => 
+        id && id.toLowerCase().includes(tripId.toLowerCase())
+      );
+
+      if (!exactTripId) {
+        setError(`Trip ID not found: ${tripId}`);
+        return;
+      }
+
+      // Auto-select the trailer and trip
+      setSelectedTrailer(foundTrailer);
+      setSelectedTripId(exactTripId);
+      
+      // Fetch trip data safely
+      if (foundTrailer.trailer_id && exactTripId) {
+        await fetchTripData(foundTrailer.trailer_id, exactTripId);
+      }
+      
+      // Clear search
+      setSearchTripId('');
+      
+      console.log(`✅ Found trip ${exactTripId} in trailer ${foundTrailer.trailer_id}`);
+      
+    } catch (err) {
+      setError('Failed to search for trip ID');
+      console.error('Search error:', err);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, [trailers, fetchTripData]);
+
   // Memoized pagination calculations
   const paginatedTrailers = useMemo(() => {
     const startIndex = currentPage * ITEMS_PER_PAGE;
     return trailers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [trailers, currentPage]);
 
-  const paginatedTrips = useMemo(() => {
+  // Sort trips by the ending numbers (-01, -02, etc.) and then paginate
+  const sortedAndPaginatedTrips = useMemo(() => {
     if (!selectedTrailer) return [];
+    
+    // Sort trip IDs by the ending numbers
+    const sortedTripIds = [...selectedTrailer.trip_ids].sort((a, b) => {
+      // Extract the ending number from trip IDs (e.g., "TR-0000128288-01" -> "01")
+      const getEndingNumber = (tripId: string) => {
+        const match = tripId.match(/-(\d+)$/);
+        return match ? parseInt(match[1], 10) : 0;
+      };
+      
+      const aNumber = getEndingNumber(a);
+      const bNumber = getEndingNumber(b);
+      
+      // First sort by the main trip ID (everything before the last dash)
+      const aBase = a.substring(0, a.lastIndexOf('-'));
+      const bBase = b.substring(0, b.lastIndexOf('-'));
+      
+      if (aBase !== bBase) {
+        return aBase.localeCompare(bBase);
+      }
+      
+      // Then sort by the ending number
+      return aNumber - bNumber;
+    });
+    
     const startIndex = tripPage * ITEMS_PER_PAGE;
-    return selectedTrailer.trip_ids.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    return sortedTripIds.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [selectedTrailer, tripPage]);
 
   const totalPages = Math.ceil(trailers.length / ITEMS_PER_PAGE);
@@ -133,67 +222,85 @@ const TrailersPage: React.FC = () => {
 
   // Optimized chart data preparation with proper trip phase grouping
   const prepareChartData = useMemo(() => {
-    if (tripData.length === 0) return [];
+    if (!tripData || tripData.length === 0) return [];
 
-    const allDataPoints: Array<{
-      time: number;
-      timestamp: string;
-      actualTemp: number;
-      requiredTemp: number;
-      driverSetTemp: number;
-      status: string;
-      tripId: string;
-    }> = [];
+    try {
+      const allDataPoints: Array<{
+        time: number;
+        timestamp: string;
+        actualTemp: number;
+        requiredTemp: number;
+        driverSetTemp: number;
+        status: string;
+        tripId: string;
+      }> = [];
 
-    // Group by status and get unique data points
-    tripData.forEach((trip) => {
-      trip.aggregated_data.forEach((point) => {
-        allDataPoints.push({
-          time: point.samsara_temp_time,
-          timestamp: formatDate(point.samsara_temp_time),
-          actualTemp: point.samsara_temp,
-          requiredTemp: point.required_temp,
-          driverSetTemp: point.driver_set_temp,
-          status: trip.status,
-          tripId: `${trip.trip_id}-${trip.status}`,
-        });
+      // Group by status and get unique data points
+      tripData.forEach((trip) => {
+        if (trip && trip.aggregated_data && Array.isArray(trip.aggregated_data)) {
+          trip.aggregated_data.forEach((point) => {
+            if (point && typeof point.samsara_temp_time === 'number') {
+              allDataPoints.push({
+                time: point.samsara_temp_time,
+                timestamp: formatDate(point.samsara_temp_time),
+                actualTemp: point.samsara_temp || 0,
+                requiredTemp: point.required_temp || 0,
+                driverSetTemp: point.driver_set_temp || 0,
+                status: trip.status || 'Unknown',
+                tripId: `${trip.trip_id || 'Unknown'}-${trip.status || 'Unknown'}`,
+              });
+            }
+          });
+        }
       });
-    });
 
-    // Remove duplicate timestamps and sort by time
-    const uniqueDataPoints = allDataPoints
-      .filter((point, index, arr) => 
-        arr.findIndex(p => p.time === point.time) === index
-      )
-      .sort((a, b) => a.time - b.time);
-    
-    // If we have too many data points, sample them for better performance
-    if (uniqueDataPoints.length > CHART_DATA_LIMIT) {
-      const step = Math.ceil(uniqueDataPoints.length / CHART_DATA_LIMIT);
-      return uniqueDataPoints.filter((_, index) => index % step === 0);
+      // Remove duplicate timestamps and sort by time
+      const uniqueDataPoints = allDataPoints
+        .filter((point, index, arr) => 
+          arr.findIndex(p => p.time === point.time) === index
+        )
+        .sort((a, b) => a.time - b.time);
+      
+      // If we have too many data points, sample them for better performance
+      if (uniqueDataPoints.length > CHART_DATA_LIMIT) {
+        const step = Math.ceil(uniqueDataPoints.length / CHART_DATA_LIMIT);
+        return uniqueDataPoints.filter((_, index) => index % step === 0);
+      }
+      
+      return uniqueDataPoints;
+    } catch (error) {
+      console.error('Error preparing chart data:', error);
+      return [];
     }
-    
-    return uniqueDataPoints;
   }, [tripData, formatDate]);
 
   // Group trip data by status for better display
   const groupedTripData = useMemo(() => {
-    const grouped = tripData.reduce((acc, trip) => {
-      const key = `${trip.status_id}-${trip.status}`;
-      if (!acc[key]) {
-        acc[key] = {
-          ...trip,
-          dataPoints: trip.aggregated_data.length,
-          timeRange: {
-            start: trip.sub_trip_start_time,
-            end: trip.sub_trip_end_time,
-          }
-        };
-      }
-      return acc;
-    }, {} as Record<string, any>);
+    if (!tripData || tripData.length === 0) return [];
     
-    return Object.values(grouped);
+    try {
+      const grouped = tripData.reduce((acc, trip) => {
+        if (trip && trip.status_id !== undefined && trip.status) {
+          const key = `${trip.status_id}-${trip.status}`;
+          if (!acc[key]) {
+            acc[key] = {
+              ...trip,
+              dataPoints: trip.aggregated_data ? trip.aggregated_data.length : 0,
+              timeRange: {
+                start: trip.sub_trip_start_time || trip.trip_start_time || 0,
+                end: trip.sub_trip_end_time || trip.trip_end_time || 0,
+              }
+            };
+          }
+        }
+        return acc;
+      }, {} as Record<string, any>);
+      
+      return Object.values(grouped);
+    } catch (error) {
+      console.error('Error grouping trip data:', error);
+      return [];
+    }
   }, [tripData]);
 
   // Loading spinner component
@@ -272,7 +379,7 @@ const TrailersPage: React.FC = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Trailers & Trips
@@ -281,15 +388,48 @@ const TrailersPage: React.FC = () => {
             Monitor trailer locations and temperature data ({trailers.length} trailers)
           </p>
         </div>
-        <Button 
-          onClick={fetchTrailers} 
-          variant="outline" 
-          className="flex items-center gap-2"
-          disabled={loading}
-        >
-          <TrendingUp className="h-4 w-4" />
-          Refresh Data
-        </Button>
+        
+        {/* Quick Trip Search */}
+        <div className="flex flex-col sm:flex-row gap-3 items-end">
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Quick Trip Lookup
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Enter trip/shipment ID..."
+                value={searchTripId}
+                onChange={(e) => setSearchTripId(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchByTripId(searchTripId)}
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-sky-500 focus:border-transparent min-w-[200px]"
+                disabled={searchLoading || loading}
+              />
+              <Button
+                onClick={() => searchByTripId(searchTripId)}
+                disabled={searchLoading || loading || !searchTripId.trim()}
+                className="flex items-center gap-2 bg-sky-600 hover:bg-sky-700"
+              >
+                {searchLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Package className="h-4 w-4" />
+                )}
+                Search
+              </Button>
+            </div>
+          </div>
+          
+          <Button 
+            onClick={fetchTrailers} 
+            variant="outline" 
+            className="flex items-center gap-2"
+            disabled={loading}
+          >
+            <TrendingUp className="h-4 w-4" />
+            Refresh Data
+          </Button>
+        </div>
       </div>
 
       {error && (
@@ -358,14 +498,22 @@ const TrailersPage: React.FC = () => {
             <div className="space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-teal-500" />
-                    Trips for {selectedTrailer.trailer_id} ({selectedTrailer.trip_ids.length})
-                  </h2>
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-teal-500" />
+                      Trips for {selectedTrailer.trailer_id} ({selectedTrailer.trip_ids.length})
+                    </h2>
+                    {selectedTripId && (
+                      <div className="flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400">
+                        <CheckCircle className="h-4 w-4" />
+                        <span>Viewing: {selectedTripId}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-2 p-4 min-h-[300px]">
                   <AnimatePresence mode="wait">
-                    {paginatedTrips.map((tripId, index) => (
+                    {sortedAndPaginatedTrips.map((tripId: string, index: number) => (
                       <motion.button
                         key={tripId}
                         initial={{ opacity: 0, x: -20 }}
@@ -466,12 +614,14 @@ const TrailersPage: React.FC = () => {
                         </div>
 
                         {/* Temperature Chart */}
-                        <TrailerChart
-                          data={prepareChartData}
-                          requiredTemp={tripData[0]?.aggregated_data[0]?.required_temp || 28}
-                          formatDate={formatDate}
-                          dataLimit={CHART_DATA_LIMIT}
-                        />
+                        {prepareChartData && prepareChartData.length > 0 && (
+                          <TrailerChart
+                            data={prepareChartData}
+                            requiredTemp={tripData[0]?.aggregated_data?.[0]?.required_temp || 28}
+                            formatDate={formatDate}
+                            dataLimit={CHART_DATA_LIMIT}
+                          />
+                        )}
                       </>
                     ) : null}
                   </motion.div>
