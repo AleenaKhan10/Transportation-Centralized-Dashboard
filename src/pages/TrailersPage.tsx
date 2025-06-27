@@ -136,11 +136,11 @@ const TrailersPage: React.FC = () => {
     return trailers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [trailers, currentPage]);
 
-  // Sort trips by the ending numbers (-01, -02, etc.) and then paginate
+  // Sort trips by the ending numbers (-01, -02, etc.) in reverse order and then paginate
   const sortedAndPaginatedTrips = useMemo(() => {
     if (!selectedTrailer) return [];
     
-    // Sort trip IDs by the ending numbers
+    // Sort trip IDs by the ending numbers (reverse order)
     const sortedTripIds = [...selectedTrailer.trip_ids].sort((a, b) => {
       // Extract the ending number from trip IDs (e.g., "TR-0000128288-01" -> "01")
       const getEndingNumber = (tripId: string) => {
@@ -156,11 +156,11 @@ const TrailersPage: React.FC = () => {
       const bBase = b.substring(0, b.lastIndexOf('-'));
       
       if (aBase !== bBase) {
-        return aBase.localeCompare(bBase);
+        return bBase.localeCompare(aBase); // Reverse the main trip ID order
       }
       
-      // Then sort by the ending number
-      return aNumber - bNumber;
+      // Then sort by the ending number in reverse order (higher numbers first)
+      return bNumber - aNumber;
     });
     
     const startIndex = tripPage * ITEMS_PER_PAGE;
