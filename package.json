@@ -1,8 +1,10 @@
 {
-  "name": "age-logistics-dashboard",
+  "name": "agy-logistics-dashboard",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "AGY Logistics Transportation Management Dashboard",
+  "homepage": "https://agy-logistics.netlify.app",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

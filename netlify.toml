@@ -1,0 +1,48 @@
+[build]
+  # Directory to publish
+  publish = "dist"
+  # Build command
+  command = "npm run build"
+
+[[redirects]]
+  # Handle SPA routing - redirect all routes to index.html
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  # API proxy for trailers endpoint
+  from = "/api/trailers"
+  to = "https://get-trailers-and-trips-181509438418.us-central1.run.app"
+  status = 200
+  force = true
+  headers = {X-API-Key = "0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220"}
+
+[[redirects]]
+  # API proxy for trip data endpoint
+  from = "/api/trip-data"
+  to = "https://get-trip-data-181509438418.us-central1.run.app"
+  status = 200
+  force = true
+  headers = {X-API-Key = "0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220"}
+
+[build.environment]
+  # Node version for build
+  NODE_VERSION = "18"
+
+[[headers]]
+  # Security headers for all pages
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  # Cache static assets
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable" 
