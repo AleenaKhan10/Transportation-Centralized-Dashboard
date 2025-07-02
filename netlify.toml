@@ -21,6 +21,13 @@
   headers = {X-API-Key = "0bcf49a90e765ca3d7ea8ba1ae25373142e374c556919aa3e5c41adf8b2ff220"}
 
 [[redirects]]
+  # Slack Tickets API routes - handled by Netlify functions
+  from = "/api/slack-tickets/*"
+  to = "/.netlify/functions/slack-tickets"
+  status = 200
+  force = true
+
+[[redirects]]
   # Handle SPA routing - redirect all routes to index.html (must come last)
   from = "/*"
   to = "/index.html"

@@ -270,4 +270,43 @@ export interface TrailerTripsResponse {
 
 export interface TripDataResponse {
   trips: TripData[];
+}
+
+// Slack Tickets Types
+export interface SlackTicket {
+  id: number;
+  message_id: string;
+  user_id: string;
+  channel_id: string;
+  channel_name: string;
+  user_message: string;
+  ai_response: string;
+  confidence_score: number;
+  response_sources: string;
+  thread_ts: string;
+  created_at: string;
+  updated_at: string;
+  is_mention: boolean;
+  processed_at: string | null;
+}
+
+export interface SlackTicketsResponse {
+  data: SlackTicket[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+
+export type SlackTicketViewType = 'chat' | 'table' | 'card' | 'analytics' | 'timeline';
+
+export interface SlackTicketsFilter {
+  channel_name?: string;
+  is_mention?: boolean;
+  confidence_score_min?: number;
+  confidence_score_max?: number;
+  date_from?: string;
+  date_to?: string;
 } 

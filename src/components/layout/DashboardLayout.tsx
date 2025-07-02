@@ -8,7 +8,8 @@ import {
   Users, 
   BarChart3, 
   Settings,
-  MapPin
+  MapPin,
+  MessageSquare
 } from 'lucide-react'
 import { NavigationItem } from '../../types/index'
 import Sidebar from './Sidebar'
@@ -35,6 +36,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       href: '/dashboard/trailers',
       icon: MapPin,
       current: location.pathname.startsWith('/dashboard/trailers'),
+    },
+    {
+      name: 'Slack Tickets',
+      href: '/dashboard/slack-tickets',
+      icon: MessageSquare,
+      current: location.pathname.startsWith('/dashboard/slack-tickets'),
     },
     {
       name: 'Shipments',

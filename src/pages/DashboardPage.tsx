@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import DashboardOverview from '../components/dashboard/DashboardOverview'
 import TrailersPage from './TrailersPage'
+import SlackTicketsPage from './SlackTicketsPage'
 
 const DashboardPage: React.FC = () => {
   return (
@@ -13,6 +14,9 @@ const DashboardPage: React.FC = () => {
         
         {/* Trailers and trips route */}
         <Route path="trailers" element={<TrailersPage />} />
+        
+        {/* Slack tickets route */}
+        <Route path="slack-tickets" element={<SlackTicketsPage />} />
         
         {/* Placeholder routes for future features */}
         <Route 
