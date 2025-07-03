@@ -6,10 +6,10 @@ const ParentButton =()=>{
     const [isShowingModal, toggleModal] = useModal();
 
     return (
-        <div>
-            <Button onClick={toggleModal}>Open</Button>
+        <>
             <IndividualDriverModal show={isShowingModal} onCLoseButtonClick={toggleModal}/>
-        </div>
+            <Button onClick={toggleModal}>Open</Button>
+        </>
     )
 }
 

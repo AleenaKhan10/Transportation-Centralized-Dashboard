@@ -64,7 +64,6 @@ const DashboardPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="p-6"
             >
-              <ParentButton/>
               <div className="text-center py-20">
                 <h2 className="text-3xl font-heading font-bold text-gradient mb-4">
                   Driver Management
@@ -73,6 +72,7 @@ const DashboardPage: React.FC = () => {
                   Coming Soon - Driver schedules, performance, and compliance
                 </p>
               </div>
+              <ParentButton/>
             </motion.div>
           } 
         />
