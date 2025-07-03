@@ -60,10 +60,11 @@ const DashboardPage: React.FC = () => {
           path="drivers" 
           element={
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-6"
             >
+              <ParentButton/>
               <div className="text-center py-20">
                 <h2 className="text-3xl font-heading font-bold text-gradient mb-4">
                   Driver Management
@@ -71,7 +72,6 @@ const DashboardPage: React.FC = () => {
                 <p className="text-dark-400 text-lg">
                   Coming Soon - Driver schedules, performance, and compliance
                 </p>
-                <ParentButton/>
               </div>
             </motion.div>
           } 
