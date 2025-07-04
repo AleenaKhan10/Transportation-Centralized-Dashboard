@@ -1,4 +1,3 @@
-import { Button } from '../ui/Button'
 import { motion } from 'framer-motion'
 
 const tbodyData = [
@@ -81,18 +80,18 @@ const IndividualDriverModal = ({ show, onCLoseButtonClick }: { show: Boolean, on
                             <tbody className='border border-dark-700'>
                                 {tbodyData.map((row) => (
                                     <tr>
-                                        <td>
+                                        <td className='border border-dark-700'>
                                             <div className="p-[3px] pl-[10px] flex flex-row gap-x-[10px] items-center">
                                                 <img src={`/icons/${row[2]}.png`} alt="check" className="w-[20px] h-[20px]" />
                                                 <p className='text-[15px]'>{row[0]}</p>
                                             </div>
                                         </td>
-                                        <td>
+                                        <td className='border border-dark-700'>
                                             <div className='flex flex-row justify-center items-center p-[3px]'>
                                                 <img src={`/icons/${row[1]}.png`} alt="check" className="w-[20px] h-[20px]" />
                                             </div>
                                         </td>
-                                        <td className='text-center'>
+                                        <td className='text-center border border-dark-700'>
                                             <div className='flex flex-row justify-center items-center p-[3px]'>
                                                 <img src={`/icons/${row[1]}.png`} alt="check" className="w-[20px] h-[20px]" />
                                             </div>

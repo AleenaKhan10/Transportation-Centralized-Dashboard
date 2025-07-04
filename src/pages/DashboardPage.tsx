@@ -4,7 +4,8 @@ import { motion } from 'framer-motion'
 import DashboardLayout from '../components/layout/DashboardLayout'
 import DashboardOverview from '../components/dashboard/DashboardOverview'
 import TrailersPage from './TrailersPage'
-import ParentButton from '@/components/driver/ParentButton'
+import DriverSearchBar from '@/components/driver/DriverSearchBar'
+import DriverTable from '@/components/driver/DriverTable'
 
 const DashboardPage: React.FC = () => {
   return (
@@ -64,15 +65,16 @@ const DashboardPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="p-6"
             >
-              <div className="text-center py-20">
+              <div className="text-center py-20 flex flex-col items-center">
                 <h2 className="text-3xl font-heading font-bold text-gradient mb-4">
                   Driver Management
                 </h2>
                 <p className="text-dark-400 text-lg">
                   Coming Soon - Driver schedules, performance, and compliance
                 </p>
-              </div>
-              <ParentButton/>
+                <DriverSearchBar/>
+                <DriverTable/>
+              </div> 
             </motion.div>
           } 
         />
