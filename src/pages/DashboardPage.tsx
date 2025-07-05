@@ -5,6 +5,7 @@ import DashboardLayout from '../components/layout/DashboardLayout'
 import DashboardOverview from '../components/dashboard/DashboardOverview'
 import TrailersPage from './TrailersPage'
 import SlackTicketsPage from './SlackTicketsPage'
+import CallAgentsPage from './CallAgentsPage'
 
 const DashboardPage: React.FC = () => {
   return (
@@ -17,6 +18,9 @@ const DashboardPage: React.FC = () => {
         
         {/* Slack tickets route */}
         <Route path="slack-tickets" element={<SlackTicketsPage />} />
+        
+        {/* Call agents route */}
+        <Route path="call-agents" element={<CallAgentsPage />} />
         
         {/* Placeholder routes for future features */}
         <Route 

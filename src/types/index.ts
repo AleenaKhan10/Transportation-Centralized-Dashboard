@@ -309,4 +309,168 @@ export interface SlackTicketsFilter {
   confidence_score_max?: number;
   date_from?: string;
   date_to?: string;
+}
+
+// Call Agent Types
+export interface CallAgent {
+  id: string;
+  name: string;
+  type: 'primary' | 'breakdown' | 'job-application' | 'general';
+  status: 'available' | 'busy' | 'offline';
+  description: string;
+  scripted_flows: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CallSession {
+  id: string;
+  call_id: string;
+  caller_phone: string;
+  caller_name?: string;
+  caller_type?: 'driver' | 'job-applicant' | 'customer' | 'unknown';
+  agent_id: string;
+  agent_name: string;
+  status: 'incoming' | 'active' | 'hold' | 'transferred' | 'completed' | 'missed';
+  call_type: 'inbound' | 'outbound';
+  duration: number; // in seconds
+  start_time: string;
+  end_time?: string;
+  recording_url?: string;
+  transcript: CallTranscript[];
+  call_logs: CallLog[];
+  caller_info: CallerInfo;
+  follow_up_required: boolean;
+  follow_up_notes?: string;
+  callback_scheduled?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CallTranscript {
+  id: string;
+  session_id: string;
+  speaker: 'caller' | 'agent';
+  text: string;
+  timestamp: string;
+  confidence: number;
+  sentiment?: 'positive' | 'neutral' | 'negative';
+}
+
+export interface CallLog {
+  id: string;
+  session_id: string;
+  event_type: 'call_started' | 'call_answered' | 'call_transferred' | 'call_hold' | 'call_ended' | 'agent_note';
+  message: string;
+  timestamp: string;
+  agent_id?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface CallerInfo {
+  name?: string;
+  phone: string;
+  email?: string;
+  company?: string;
+  driver_id?: string;
+  position_applied?: string;
+  issue_type?: 'breakdown' | 'accident' | 'delivery' | 'paperwork' | 'other';
+  truck_id?: string;
+  trailer_id?: string;
+  location?: string;
+  urgency: 'low' | 'medium' | 'high' | 'critical';
+  notes?: string;
+  previous_calls?: number;
+  form_data?: Record<string, any>;
+}
+
+export interface CallFormField {
+  id: string;
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'phone' | 'select' | 'textarea' | 'radio' | 'checkbox';
+  required: boolean;
+  placeholder?: string;
+  options?: { value: string; label: string }[];
+  validation?: {
+    pattern?: string;
+    minLength?: number;
+    maxLength?: number;
+    min?: number;
+    max?: number;
+  };
+  conditional?: {
+    field: string;
+    value: string;
+  };
+}
+
+export interface CallScript {
+  id: string;
+  name: string;
+  type: 'breakdown' | 'job-application' | 'general';
+  description: string;
+  initial_greeting: string;
+  questions: CallFormField[];
+  closing_message: string;
+  slack_integration: boolean;
+  ticket_creation: boolean;
+  knowledge_base_enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CallStats {
+  total_calls: number;
+  answered_calls: number;
+  missed_calls: number;
+  average_duration: number;
+  completion_rate: number;
+  satisfaction_rating: number;
+  breakdown_calls: number;
+  job_application_calls: number;
+  general_calls: number;
+  calls_today: number;
+  calls_this_week: number;
+  calls_this_month: number;
+}
+
+export interface CallbackRequest {
+  id: string;
+  caller_phone: string;
+  caller_name?: string;
+  requested_time: string;
+  reason: string;
+  priority: 'low' | 'medium' | 'high';
+  status: 'pending' | 'scheduled' | 'completed' | 'cancelled';
+  attempts: number;
+  max_attempts: number;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type CallViewType = 'active' | 'history' | 'agents' | 'callbacks' | 'analytics' | 'voice-demo';
+
+export interface CallsFilter {
+  agent_id?: string;
+  call_type?: 'inbound' | 'outbound';
+  status?: CallSession['status'];
+  caller_type?: CallSession['caller_type'];
+  date_from?: string;
+  date_to?: string;
+  duration_min?: number;
+  duration_max?: number;
+  urgency?: CallerInfo['urgency'];
+}
+
+export interface CallsResponse {
+  data: CallSession[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+  stats: CallStats;
 } 

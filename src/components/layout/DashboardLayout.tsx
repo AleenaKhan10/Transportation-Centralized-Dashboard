@@ -9,7 +9,8 @@ import {
   BarChart3, 
   Settings,
   MapPin,
-  MessageSquare
+  MessageSquare,
+  Phone
 } from 'lucide-react'
 import { NavigationItem } from '../../types/index'
 import Sidebar from './Sidebar'
@@ -42,6 +43,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       href: '/dashboard/slack-tickets',
       icon: MessageSquare,
       current: location.pathname.startsWith('/dashboard/slack-tickets'),
+    },
+    {
+      name: 'Call Agents',
+      href: '/dashboard/call-agents',
+      icon: Phone,
+      current: location.pathname.startsWith('/dashboard/call-agents'),
     },
     {
       name: 'Shipments',
